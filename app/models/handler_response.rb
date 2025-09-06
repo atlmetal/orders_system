@@ -4,7 +4,7 @@ class HandlerResponse
   def initialize(success: false, message: "", data: {}, error_code: nil)
     @success = success
     @message = message
-    @data = data
+    @data = data || {}
     @error_code = error_code
   end
 

@@ -1,5 +1,5 @@
 class OrderRequest
-  attr_accessor :user_credentials, :order_data, :ip_address,
+  attr_accessor :user_credentials, :order_data, :ip_address, 
                 :timestamp, :session_id, :user, :sanitized_data
 
   def initialize(params = {})
@@ -13,6 +13,7 @@ class OrderRequest
   end
 
   def cache_key
+    require 'digest'
     Digest::SHA256.hexdigest("#{user_credentials}#{order_data}")
   end
 end

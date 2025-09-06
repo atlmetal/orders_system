@@ -1,31 +1,38 @@
 module Api
   class OrdersController < ApplicationController
-    before_action :set_request_data
-
     def create
-      request = OrderRequest.new(
-        user_credentials: params[:credentials],
-        order_data: params[:order],
-        ip_address: request.remote_ip,
-        session_id: session.id
+      order_request = OrderRequest.new(
+        user_credentials: params[:credentials] || {},
+        order_data: params[:order] || {},
+        ip_address: request.remote_ip,  # Aquí request es el objeto Rails HTTP request
+        session_id: session.id.to_s
       )
 
       processor = OrderProcessor.new
-      result = processor.process_order(request)
+      result = processor.process_order(order_request)
 
       if result.success?
-        render json: {
-          success: true,
-          data: result.data,
-          message: result.message
+        render json: { 
+          success: true, 
+          data: result.data, 
+          message: result.message 
         }, status: :created
       else
-        render json: {
-          success: false,
-          message: result.message,
-          error_code: result.error_code
+        render json: { 
+          success: false, 
+          message: result.message, 
+          error_code: result.error_code 
         }, status: :unprocessable_entity
       end
+    rescue => e
+      Rails.logger.error "Order processing error: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      
+      render json: {
+        success: false,
+        message: "Internal server error: #{e.message}",
+        error_code: "INTERNAL_ERROR"
+      }, status: :internal_server_error
     end
 
     private
