@@ -28,5 +28,12 @@ module OrdersSystem
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.order_chain = %w[
+      authentication
+      authorization
+      sanitization
+      brute_force
+      cache
+    ]
   end
 end
