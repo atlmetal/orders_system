@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :password, presence: true
-  validates :role, inclusion: { in: %w[user admin] }
+  validates :role, inclusion: { in: %w[user admin guest] }
 
   def admin?
     role == 'admin'
